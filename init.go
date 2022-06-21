@@ -23,7 +23,6 @@ func init() {
 	}
 
 	for i, displayMonitorInfo := range displayMonitorInfos {
-
 		// 获取物理显示器信息
 		physicalMonitorInfo, err := displayController.GetPhysicalMonitor(displayMonitorInfo.Handle)
 		if err != nil {

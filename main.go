@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/gek64/displayController"
 	"log"
 	"os"
 )
@@ -101,5 +102,12 @@ func main() {
 			}
 		}
 
+	}
+
+	if cliGetDisplay {
+		err := getAllDisplay(displayController.Contrast)
+		if err != nil {
+			log.Fatalln(err)
+		}
 	}
 }
