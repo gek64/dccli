@@ -12,7 +12,24 @@ type monitor struct {
 }
 
 var (
-	monitors []monitor
+	monitors    []monitor
+	VCPFeatures = map[string]byte{
+		"Brightness":            displayController.Brightness,
+		"Contrast":              displayController.Contrast,
+		"Red":                   displayController.Red,
+		"Green":                 displayController.Green,
+		"Blue":                  displayController.Blue,
+		"InputSource":           displayController.InputSource,
+		"Volume":                displayController.Volume,
+		"Sharpness":             displayController.Sharpness,
+		"ColorSaturation":       displayController.ColorSaturation,
+		"MuteORScreenBlank":     displayController.MuteORScreenBlank,
+		"HorizontalFrequency":   displayController.HorizontalFrequency,
+		"VerticalFrequency":     displayController.VerticalFrequency,
+		"DisplayTechnologyType": displayController.DisplayTechnologyType,
+		"DisplayUsageTime":      displayController.DisplayUsageTime,
+		"PowerMode":             displayController.PowerMode,
+	}
 )
 
 func init() {

@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/gek64/displayController"
 	"log"
 	"os"
 )
@@ -16,8 +15,13 @@ var (
 	cliDisplayID     int
 	cliDisplayHandle int
 	cliAll           bool
-	cliHelp          bool
-	cliVersion       bool
+
+	cliVCPCode    int
+	cliVCPFeature string
+	cliVCPValue   int
+
+	cliHelp    bool
+	cliVersion bool
 )
 
 func init() {
@@ -30,6 +34,11 @@ func init() {
 	flag.IntVar(&cliDisplayID, "id", -1, "Display ID")
 	flag.IntVar(&cliDisplayHandle, "handle", -1, "Display Handle")
 	flag.BoolVar(&cliAll, "all", false, "All Display")
+
+	// VCP Code 相关
+	flag.IntVar(&cliVCPCode, "vcp", -1, "VCP Code")
+	flag.StringVar(&cliVCPFeature, "feature", "", "VCP Feature")
+	flag.IntVar(&cliVCPValue, "value", -1, "VCP Value")
 
 	// cli基础
 	flag.BoolVar(&cliHelp, "h", false, "show help")
@@ -53,6 +62,9 @@ Arguments:
 	-id      <int_number>      : by id
 	-handle <int_number>  : by handle
     -all   : all
+    -vcp <vcp_code> : vcp code
+    -feature <vcp_feature> : VCP Feature
+    -value <vcp_feature_value> : VCP Feature Value
 
 Example:
 1) 
@@ -101,13 +113,85 @@ func main() {
 				log.Fatalln(err)
 			}
 		}
-
 	}
 
 	if cliGetDisplay {
-		err := getAllDisplay(displayController.Contrast)
-		if err != nil {
-			log.Fatalln(err)
+		if cliDisplayID != -1 {
+			if VCPFeatures[cliVCPFeature] != 0 {
+				err := getDisplayByID(cliDisplayID, VCPFeatures[cliVCPFeature])
+				if err != nil {
+					log.Fatalln(err)
+				}
+			} else if cliVCPCode != -1 {
+				err := getDisplayByID(cliDisplayID, byte(cliVCPCode))
+				if err != nil {
+					log.Fatalln(err)
+				}
+			}
+		} else if cliDisplayHandle != -1 {
+			if VCPFeatures[cliVCPFeature] != 0 {
+				err := getDisplayByHandle(cliDisplayHandle, VCPFeatures[cliVCPFeature])
+				if err != nil {
+					log.Fatalln(err)
+				}
+			} else if cliVCPCode != -1 {
+				err := getDisplayByHandle(cliDisplayHandle, byte(cliVCPCode))
+				if err != nil {
+					log.Fatalln(err)
+				}
+			}
+		} else {
+			if VCPFeatures[cliVCPFeature] != 0 {
+				err := getAllDisplay(VCPFeatures[cliVCPFeature])
+				if err != nil {
+					log.Fatalln(err)
+				}
+			} else if cliVCPCode != -1 {
+				err := getAllDisplay(byte(cliVCPCode))
+				if err != nil {
+					log.Fatalln(err)
+				}
+			}
+		}
+	}
+
+	if cliSetDisplay {
+		if cliDisplayID != -1 {
+			if VCPFeatures[cliVCPFeature] != 0 {
+				err := setDisplayByID(cliDisplayID, VCPFeatures[cliVCPFeature], cliVCPValue)
+				if err != nil {
+					log.Fatalln(err)
+				}
+			} else if cliVCPCode != -1 {
+				err := setDisplayByID(cliDisplayID, byte(cliVCPCode), cliVCPValue)
+				if err != nil {
+					log.Fatalln(err)
+				}
+			}
+		} else if cliDisplayHandle != -1 {
+			if VCPFeatures[cliVCPFeature] != 0 {
+				err := setDisplayByHandle(cliDisplayHandle, VCPFeatures[cliVCPFeature], cliVCPValue)
+				if err != nil {
+					log.Fatalln(err)
+				}
+			} else if cliVCPCode != -1 {
+				err := setDisplayByHandle(cliDisplayHandle, byte(cliVCPCode), cliVCPValue)
+				if err != nil {
+					log.Fatalln(err)
+				}
+			}
+		} else {
+			if VCPFeatures[cliVCPFeature] != 0 {
+				err := setAllDisplay(VCPFeatures[cliVCPFeature], cliVCPValue)
+				if err != nil {
+					log.Fatalln(err)
+				}
+			} else if cliVCPCode != -1 {
+				err := setAllDisplay(byte(cliVCPCode), cliVCPValue)
+				if err != nil {
+					log.Fatalln(err)
+				}
+			}
 		}
 	}
 }
