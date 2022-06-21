@@ -17,18 +17,11 @@ func setDisplayByID(id int, vcpCode byte, value int) (err error) {
 	for _, monitor := range monitors {
 		if monitor.id == id {
 			found = true
-			fmt.Printf("Display Monitor ID: %d\n", monitor.id)
-			fmt.Printf("Display Monitor Handle ID: %d\n", monitor.physicalInfo.Handle)
-			fmt.Printf("Display Monitor Description: %s\n", monitor.physicalInfo.Description)
-
-			err := displayController.SetVCPFeature(monitor.physicalInfo.Handle, vcpCode, value)
+			err := setVCPFeatureValue(monitor, vcpCode, value)
 			if err != nil {
 				fmt.Println(err)
 				continue
 			}
-			fmt.Printf("Display Monitor VCP Code 0x%x, Set to Value %d\n", vcpCode, value)
-
-			fmt.Println()
 		}
 		// 找到了就跳出循环
 		if found {
@@ -55,18 +48,11 @@ func setDisplayByHandle(handle int, vcpCode byte, value int) (err error) {
 	for _, monitor := range monitors {
 		if monitor.physicalInfo.Handle == syscall.Handle(handle) {
 			found = true
-			fmt.Printf("Display Monitor ID: %d\n", monitor.id)
-			fmt.Printf("Display Monitor Handle ID: %d\n", monitor.physicalInfo.Handle)
-			fmt.Printf("Display Monitor Description: %s\n", monitor.physicalInfo.Description)
-
-			err := displayController.SetVCPFeature(monitor.physicalInfo.Handle, vcpCode, value)
+			err := setVCPFeatureValue(monitor, vcpCode, value)
 			if err != nil {
 				fmt.Println(err)
 				continue
 			}
-			fmt.Printf("Display Monitor VCP Code 0x%x, Set to Value %d\n", vcpCode, value)
-
-			fmt.Println()
 		}
 		// 找到了就跳出循环
 		if found {
@@ -89,18 +75,27 @@ func setAllDisplay(vcpCode byte, value int) (err error) {
 	}
 
 	for _, monitor := range monitors {
-		fmt.Printf("Display Monitor ID: %d\n", monitor.id)
-		fmt.Printf("Display Monitor Handle ID: %d\n", monitor.physicalInfo.Handle)
-		fmt.Printf("Display Monitor Description: %s\n", monitor.physicalInfo.Description)
-
-		err := displayController.SetVCPFeature(monitor.physicalInfo.Handle, vcpCode, value)
+		err := setVCPFeatureValue(monitor, vcpCode, value)
 		if err != nil {
 			fmt.Println(err)
 			continue
 		}
-		fmt.Printf("Display Monitor VCP Code 0x%x, Set to Value %d\n", vcpCode, value)
+	}
+	return nil
+}
 
+func setVCPFeatureValue(monitor monitor, vcpCode byte, value int) (err error) {
+	fmt.Printf("Display Monitor ID: %d\n", monitor.id)
+	fmt.Printf("Display Monitor Handle ID: %d\n", monitor.physicalInfo.Handle)
+	fmt.Printf("Display Monitor Description: %s\n", monitor.physicalInfo.Description)
+
+	err = displayController.SetVCPFeature(monitor.physicalInfo.Handle, vcpCode, value)
+	if err != nil {
+		return err
+	} else {
+		fmt.Printf("Display Monitor VCP Code 0x%x, Set to Value %d\n", vcpCode, value)
 		fmt.Println()
 	}
+
 	return nil
 }

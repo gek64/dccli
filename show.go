@@ -16,12 +16,7 @@ func showDisplayByID(id int) (err error) {
 	for _, monitor := range monitors {
 		if monitor.id == id {
 			found = true
-			fmt.Printf("Display Monitor ID: %d\n", monitor.id)
-			fmt.Printf("Display Monitor Handle ID: %d\n", monitor.physicalInfo.Handle)
-			fmt.Printf("Display Monitor Description: %s\n", monitor.physicalInfo.Description)
-			fmt.Printf("Display Monitor Resolution: %d x %d\n", monitor.sysInfo.RectAngle.Right-monitor.sysInfo.RectAngle.Left, monitor.sysInfo.RectAngle.Bottom-monitor.sysInfo.RectAngle.Top)
-			fmt.Printf("Display Monitor Position: Bottom %d Top %d Right %d Left %d\n", monitor.sysInfo.RectAngle.Bottom, monitor.sysInfo.RectAngle.Top, monitor.sysInfo.RectAngle.Right, monitor.sysInfo.RectAngle.Left)
-			fmt.Println()
+			showDisplay(monitor)
 		}
 		// 找到了就跳出循环
 		if found {
@@ -48,12 +43,7 @@ func showDisplayByHandle(handle int) (err error) {
 	for _, monitor := range monitors {
 		if monitor.physicalInfo.Handle == syscall.Handle(handle) {
 			found = true
-			fmt.Printf("Display Monitor ID: %d\n", monitor.id)
-			fmt.Printf("Display Monitor Handle ID: %d\n", monitor.physicalInfo.Handle)
-			fmt.Printf("Display Monitor Description: %s\n", monitor.physicalInfo.Description)
-			fmt.Printf("Display Monitor Resolution: %d x %d\n", monitor.sysInfo.RectAngle.Right-monitor.sysInfo.RectAngle.Left, monitor.sysInfo.RectAngle.Bottom-monitor.sysInfo.RectAngle.Top)
-			fmt.Printf("Display Monitor Position: Bottom %d Top %d Right %d Left %d\n", monitor.sysInfo.RectAngle.Bottom, monitor.sysInfo.RectAngle.Top, monitor.sysInfo.RectAngle.Right, monitor.sysInfo.RectAngle.Left)
-			fmt.Println()
+			showDisplay(monitor)
 		}
 		// 找到了就跳出循环
 		if found {
@@ -76,12 +66,16 @@ func showAllDisplay() (err error) {
 	}
 
 	for _, monitor := range monitors {
-		fmt.Printf("Display Monitor ID: %d\n", monitor.id)
-		fmt.Printf("Display Monitor Handle ID: %d\n", monitor.physicalInfo.Handle)
-		fmt.Printf("Display Monitor Description: %s\n", monitor.physicalInfo.Description)
-		fmt.Printf("Display Monitor Resolution: %d x %d\n", monitor.sysInfo.RectAngle.Right-monitor.sysInfo.RectAngle.Left, monitor.sysInfo.RectAngle.Bottom-monitor.sysInfo.RectAngle.Top)
-		fmt.Printf("Display Monitor Position: Bottom %d Top %d Right %d Left %d\n", monitor.sysInfo.RectAngle.Bottom, monitor.sysInfo.RectAngle.Top, monitor.sysInfo.RectAngle.Right, monitor.sysInfo.RectAngle.Left)
-		fmt.Println()
+		showDisplay(monitor)
 	}
 	return nil
+}
+
+func showDisplay(monitor monitor) {
+	fmt.Printf("Display Monitor ID: %d\n", monitor.id)
+	fmt.Printf("Display Monitor Handle ID: %d\n", monitor.physicalInfo.Handle)
+	fmt.Printf("Display Monitor Description: %s\n", monitor.physicalInfo.Description)
+	fmt.Printf("Display Monitor Resolution: %d x %d\n", monitor.sysInfo.RectAngle.Right-monitor.sysInfo.RectAngle.Left, monitor.sysInfo.RectAngle.Bottom-monitor.sysInfo.RectAngle.Top)
+	fmt.Printf("Display Monitor Position: Bottom %d Top %d Right %d Left %d\n", monitor.sysInfo.RectAngle.Bottom, monitor.sysInfo.RectAngle.Top, monitor.sysInfo.RectAngle.Right, monitor.sysInfo.RectAngle.Left)
+	fmt.Println()
 }
