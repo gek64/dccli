@@ -90,6 +90,7 @@ jobs:
           # 获取版本信息
           echo "VERSION=$(cat bin/version.txt)" >> $GITHUB_ENV
           rm -rf bin/version.txt
+          echo $GITHUB_ENV
       - name: Release
         uses: ncipollo/release-action@v1
         with:
