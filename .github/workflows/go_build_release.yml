@@ -56,6 +56,7 @@ jobs:
           # ls .. -R -las
           # 获取sha256 checksum
           sha256sum bin/* > bin/SHA256SUMS.txt
+          
           # 获取版本信息
           echo "$(go run . -v)" > bin/version.txt
       - name: Remove old Releases
@@ -90,7 +91,7 @@ jobs:
           # 获取版本信息
           echo "VERSION=$(cat bin/version.txt)" >> $GITHUB_ENV
           rm -rf bin/version.txt
-          echo $GITHUB_ENV
+          
       - name: Release
         uses: ncipollo/release-action@v1
         with:
