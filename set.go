@@ -70,8 +70,6 @@ func setDisplayByHandle(handle int, vcpCode byte, value int) (err error) {
 func setAllDisplay(vcpCode byte, value int) (err error) {
 	if len(monitors) == 0 {
 		return fmt.Errorf("can't find any physical display monitor")
-	} else {
-		fmt.Printf("Find %d Display Monitor\n", len(monitors))
 	}
 
 	for _, monitor := range monitors {

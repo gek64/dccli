@@ -51,27 +51,25 @@ func init() {
     dccli [Command] [Arguments]
 
 Command:
-	-show          : show
-	-get        : get
-	-set           : set
-	
-	-h                : show help
-	-v                : show version
+    -show          : show display monitor info
+    -get           : get vcp feature value from select display monitors
+    -set           : set vcp feature value for select display monitors
+    -h             : show help
+    -v             : show version
 
 Arguments:
-	-id      <int_number>      : by id
-	-handle <int_number>  : by handle
-    -all   : all
-    -vcp <vcp_code> : vcp code
-    -feature <vcp_feature> : VCP Feature
-    -value <vcp_feature_value> : VCP Feature Value
+    -id      <int_number>         : select display monitor by id
+    -handle  <int_number>         : select display monitor by handle
+    -all                          : select all display monitor
+    -vcp     <vcp_code>           : specify vcp code
+    -feature <vcp_feature>        : specify vcp feature
+    -value   <vcp_feature_value>  : specify vcp feature value
 
 Example:
-1) 
-2) 
-3) 
-4) 
-5) `
+1) dccli -show
+2) dccli -show -all
+3) dccli -get -id 0 -feature Brightness
+4) dccli -set -handle 0 -vcp 0x10 -value 50`
 		fmt.Println(helpInfo)
 	}
 
@@ -85,6 +83,26 @@ Example:
 	if cliVersion {
 		fmt.Println("v1.00")
 		os.Exit(0)
+	}
+
+	// get功能
+	if cliGetDisplay {
+		// vcp 代码或者功能需要指定一个
+		if cliVCPCode == -1 && cliVCPFeature == "" {
+			log.Fatalln("no specify vcp code or vcp feature")
+		}
+	}
+
+	// set功能
+	if cliSetDisplay {
+		// vcp 代码或者功能需要指定一个
+		if cliVCPCode == -1 && cliVCPFeature == "" {
+			log.Fatalln("no specify vcp code or vcp feature")
+		}
+		// vcp 功能值需要指定
+		if cliVCPValue == -1 {
+			log.Fatalln("no specify vcp feature value")
+		}
 	}
 }
 
