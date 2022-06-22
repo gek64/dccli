@@ -7,7 +7,7 @@
 ╚═════╝  ╚═════╝ ╚═════╝╚══════╝╚═╝
 ```
 
-[中文说明](#)
+[中文说明](https://github.com/gek64/dccli/blob/main/README_chs.md)
 - Display controller command line interface
 
 ## Usage
