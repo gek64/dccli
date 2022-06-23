@@ -20,6 +20,7 @@ var (
 	cliVCPFeature string
 	cliVCPValue   int
 
+	cliConsole bool
 	cliHelp    bool
 	cliVersion bool
 )
@@ -41,6 +42,7 @@ func init() {
 	flag.IntVar(&cliVCPValue, "value", -1, "VCP Value")
 
 	// cli基础
+	flag.BoolVar(&cliConsole, "c", false, "console mode")
 	flag.BoolVar(&cliHelp, "h", false, "show help")
 	flag.BoolVar(&cliVersion, "v", false, "show version")
 	flag.Parse()
@@ -73,8 +75,14 @@ Example:
 		fmt.Println(helpInfo)
 	}
 
+	// 控制台模式
+	if len(os.Args) == 1 || cliConsole {
+		flag.Usage()
+		os.Exit(0)
+	}
+
 	// 如果无 args 或者 指定 h 参数,打印用法后退出
-	if len(os.Args) == 1 || cliHelp {
+	if cliHelp {
 		flag.Usage()
 		os.Exit(0)
 	}
