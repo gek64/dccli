@@ -77,7 +77,11 @@ Example:
 
 	// 控制台模式
 	if len(os.Args) == 1 || cliConsole {
-		flag.Usage()
+		err := console()
+		if err != nil {
+			log.Fatalln(err)
+		}
+
 		os.Exit(0)
 	}
 
