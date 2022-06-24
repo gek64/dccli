@@ -20,7 +20,7 @@ var (
 	cliVCPFeature string
 	cliVCPValue   int
 
-	cliConsole bool
+	cliDemo    bool
 	cliHelp    bool
 	cliVersion bool
 )
@@ -42,7 +42,7 @@ func init() {
 	flag.IntVar(&cliVCPValue, "value", -1, "VCP Value")
 
 	// cli基础
-	flag.BoolVar(&cliConsole, "c", false, "console mode")
+	flag.BoolVar(&cliDemo, "demo", false, "brightness setting demo")
 	flag.BoolVar(&cliHelp, "h", false, "show help")
 	flag.BoolVar(&cliVersion, "v", false, "show version")
 	flag.Parse()
@@ -76,8 +76,8 @@ Example:
 	}
 
 	// 控制台模式
-	if len(os.Args) == 1 || cliConsole {
-		err := console()
+	if len(os.Args) == 1 || cliDemo {
+		err := runDemo()
 		if err != nil {
 			log.Fatalln(err)
 		}

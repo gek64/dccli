@@ -8,7 +8,7 @@ import (
 type monitor struct {
 	id           int
 	physicalInfo displayController.PhysicalMonitorInfo
-	sysInfo      displayController.DisplayMonitorInfo
+	sysInfo      displayController.SystemMonitorInfo
 }
 
 var (
@@ -34,7 +34,7 @@ var (
 
 func init() {
 	// 获取所有系统显示设备
-	displayMonitorInfos, err := displayController.GetAllMonitors()
+	displayMonitorInfos, err := displayController.GetSystemMonitors()
 	if err != nil {
 		log.Fatalln(err)
 	}
