@@ -62,7 +62,7 @@ jobs:
           sha256sum bin/* > bin/SHA256SUMS.txt
 
           # 获取版本信息
-          echo "$(go run . -v)" > bin/version.txt
+          echo "${{ github.event.inputs.version }}" > bin/version.txt
 
       - name: Remove old Releases
         uses: dev-drprasad/delete-older-releases@v0.2.0
