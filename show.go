@@ -2,60 +2,30 @@ package main
 
 import (
 	"fmt"
+	"github.com/gek64/displayController"
 	"syscall"
 )
 
-func showDisplayByID(id int) (err error) {
-	// 找到了标志物
-	var found = false
-
-	if len(monitors) == 0 {
-		return fmt.Errorf("can't find any physical display monitor")
-	}
-
-	for _, monitor := range monitors {
-		if monitor.id == id {
-			found = true
-			showDisplay(monitor)
-		}
-		// 找到了就跳出循环
-		if found {
-			break
-		}
-	}
-
-	if found {
-		return nil
-	} else {
-		return fmt.Errorf("can't find any physical display monitor with id %d\n", id)
-	}
-
-}
-
 func showDisplayByHandle(handle int) (err error) {
-	// 找到了标志物
-	var found = false
+	var found bool = false
 
 	if len(monitors) == 0 {
 		return fmt.Errorf("can't find any physical display monitor")
 	}
 
 	for _, monitor := range monitors {
-		if monitor.physicalInfo.Handle == syscall.Handle(handle) {
+		if monitor.PhysicalInfo.Handle == syscall.Handle(handle) {
 			found = true
 			showDisplay(monitor)
-		}
-		// 找到了就跳出循环
-		if found {
 			break
 		}
 	}
 
-	if found {
-		return nil
-	} else {
+	if !found {
 		return fmt.Errorf("can't find any physical display monitor with handle %d\n", handle)
 	}
+
+	return nil
 }
 
 func showAllDisplay() (err error) {
@@ -71,11 +41,9 @@ func showAllDisplay() (err error) {
 	return nil
 }
 
-func showDisplay(monitor monitor) {
-	fmt.Printf("Display Monitor ID: %d\n", monitor.id)
-	fmt.Printf("Display Monitor Handle ID: %d\n", monitor.physicalInfo.Handle)
-	fmt.Printf("Display Monitor Description: %s\n", monitor.physicalInfo.Description)
-	fmt.Printf("Display Monitor Resolution: %d x %d\n", monitor.sysInfo.RectAngle.Right-monitor.sysInfo.RectAngle.Left, monitor.sysInfo.RectAngle.Bottom-monitor.sysInfo.RectAngle.Top)
-	fmt.Printf("Display Monitor Position: Bottom %d Top %d Right %d Left %d\n", monitor.sysInfo.RectAngle.Bottom, monitor.sysInfo.RectAngle.Top, monitor.sysInfo.RectAngle.Right, monitor.sysInfo.RectAngle.Left)
-	fmt.Println()
+func showDisplay(monitor displayController.CompositeMonitorInfo) {
+	fmt.Printf("Display Monitor Handle: %d\n", monitor.PhysicalInfo.Handle)
+	fmt.Printf("Display Monitor Description: %s\n", monitor.PhysicalInfo.Description)
+	fmt.Printf("Display Monitor Resolution: %d x %d\n", monitor.SysInfo.RectAngle.Right-monitor.SysInfo.RectAngle.Left, monitor.SysInfo.RectAngle.Bottom-monitor.SysInfo.RectAngle.Top)
+	fmt.Printf("Display Monitor Position: Bottom %d Top %d Right %d Left %d\n", monitor.SysInfo.RectAngle.Bottom, monitor.SysInfo.RectAngle.Top, monitor.SysInfo.RectAngle.Right, monitor.SysInfo.RectAngle.Left)
 }

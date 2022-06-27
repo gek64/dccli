@@ -6,65 +6,28 @@ import (
 	"syscall"
 )
 
-func getDisplayByID(id int, vcpCode byte) (err error) {
-	// 找到了标志物
-	var found = false
-
-	if len(monitors) == 0 {
-		return fmt.Errorf("can't find any physical display monitor")
-	}
-
-	for _, monitor := range monitors {
-		if monitor.id == id {
-			found = true
-			err := getVCPFeatureValue(monitor, vcpCode)
-			if err != nil {
-				fmt.Println(err)
-				continue
-			}
-		}
-		// 找到了就跳出循环
-		if found {
-			break
-		}
-	}
-
-	if found {
-		return nil
-	} else {
-		return fmt.Errorf("can't find any physical display monitor with id %d\n", id)
-	}
-
-}
-
 func getDisplayByHandle(handle int, vcpCode byte) (err error) {
-	// 找到了标志物
-	var found = false
+	var found bool = false
 
 	if len(monitors) == 0 {
 		return fmt.Errorf("can't find any physical display monitor")
 	}
 
 	for _, monitor := range monitors {
-		if monitor.physicalInfo.Handle == syscall.Handle(handle) {
+		if monitor.PhysicalInfo.Handle == syscall.Handle(handle) {
 			found = true
 			err := getVCPFeatureValue(monitor, vcpCode)
 			if err != nil {
-				fmt.Println(err)
-				continue
+				return err
 			}
-		}
-		// 找到了就跳出循环
-		if found {
-			break
 		}
 	}
 
-	if found {
-		return nil
-	} else {
+	if !found {
 		return fmt.Errorf("can't find any physical display monitor with handle %d\n", handle)
 	}
+
+	return nil
 }
 
 func getAllDisplay(vcpCode byte) (err error) {
@@ -82,18 +45,15 @@ func getAllDisplay(vcpCode byte) (err error) {
 	return nil
 }
 
-func getVCPFeatureValue(monitor monitor, vcpCode byte) (err error) {
-	fmt.Printf("Display Monitor ID: %d\n", monitor.id)
-	fmt.Printf("Display Monitor Handle ID: %d\n", monitor.physicalInfo.Handle)
-	fmt.Printf("Display Monitor Description: %s\n", monitor.physicalInfo.Description)
+func getVCPFeatureValue(monitor displayController.CompositeMonitorInfo, vcpCode byte) (err error) {
+	fmt.Printf("Display Monitor Handle: %d\n", monitor.PhysicalInfo.Handle)
+	fmt.Printf("Display Monitor Description: %s\n", monitor.PhysicalInfo.Description)
 
-	currentValue, maximumValue, err := displayController.GetVCPFeatureAndVCPFeatureReply(monitor.physicalInfo.Handle, vcpCode)
+	currentValue, maximumValue, err := displayController.GetVCPFeatureAndVCPFeatureReply(monitor.PhysicalInfo.Handle, vcpCode)
 	if err != nil {
 		return err
-	} else {
-		fmt.Printf("Display Monitor VCP Code 0x%x, Current Value %d, Maximum Value %d\n", vcpCode, currentValue, maximumValue)
-		fmt.Println()
 	}
 
+	fmt.Printf("Display Monitor VCP Code 0x%x, Current Value %d, Maximum Value %d\n", vcpCode, currentValue, maximumValue)
 	return nil
 }

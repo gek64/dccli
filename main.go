@@ -12,13 +12,12 @@ var (
 	cliGetDisplay  bool
 	cliSetDisplay  bool
 
-	cliDisplayID     int
 	cliDisplayHandle int
-	cliAll           bool
+	cliUseHandle     bool = false
+	cliUseAll        bool = false
 
-	cliVCPCode    int
-	cliVCPFeature string
-	cliVCPValue   int
+	cliVCPCode  int
+	cliVCPValue int
 
 	cliDemo    bool
 	cliHelp    bool
@@ -32,13 +31,11 @@ func init() {
 	flag.BoolVar(&cliSetDisplay, "set", false, "set display data")
 
 	// 按特征值选择显示器
-	flag.IntVar(&cliDisplayID, "id", -1, "Display ID")
 	flag.IntVar(&cliDisplayHandle, "handle", -1, "Display Handle")
-	flag.BoolVar(&cliAll, "all", false, "All Display")
+	flag.BoolVar(&cliUseAll, "all", false, "All Display(default)")
 
 	// VCP Code 相关
 	flag.IntVar(&cliVCPCode, "vcp", -1, "VCP Code")
-	flag.StringVar(&cliVCPFeature, "feature", "", "VCP Feature")
 	flag.IntVar(&cliVCPValue, "value", -1, "VCP Value")
 
 	// cli基础
@@ -56,36 +53,34 @@ Command:
     -show          : show display monitor info
     -get           : get vcp feature value from select display monitors
     -set           : set vcp feature value for select display monitors
+    -demo          : simple demo to control brightness
     -h             : show help
     -v             : show version
 
 Arguments:
-    -id      <int_number>         : select display monitor by id
     -handle  <int_number>         : select display monitor by handle
     -all                          : select all display monitor
     -vcp     <vcp_code>           : specify vcp code
-    -feature <vcp_feature>        : specify vcp feature
     -value   <vcp_feature_value>  : specify vcp feature value
 
 Example:
-1) dccli -show
-2) dccli -show -all
-3) dccli -get -id 0 -feature Brightness
+1) dccli -demo
+2) dccli -show
+3) dccli -get -handle 0 -vcp 0x10
 4) dccli -set -handle 0 -vcp 0x10 -value 50`
 		fmt.Println(helpInfo)
 	}
 
-	// 控制台模式
+	// demo控制亮度
 	if len(os.Args) == 1 || cliDemo {
 		err := runDemo()
 		if err != nil {
 			log.Fatalln(err)
 		}
-
 		os.Exit(0)
 	}
 
-	// 如果无 args 或者 指定 h 参数,打印用法后退出
+	// help
 	if cliHelp {
 		flag.Usage()
 		os.Exit(0)
@@ -93,23 +88,30 @@ Example:
 
 	// 打印版本信息
 	if cliVersion {
-		fmt.Println("v1.00")
+		fmt.Println("v1.01")
 		os.Exit(0)
 	}
 
-	// get功能
+	// 显示器 handle 指定
+	if cliDisplayHandle != -1 {
+		cliUseHandle = true
+	} else {
+		cliUseAll = true
+	}
+
+	// get 功能检测
 	if cliGetDisplay {
-		// vcp 代码或者功能需要指定一个
-		if cliVCPCode == -1 && cliVCPFeature == "" {
-			log.Fatalln("no specify vcp code or vcp feature")
+		// vcp 代码需要指定
+		if cliVCPCode == -1 {
+			log.Fatalln("no specify vcp code")
 		}
 	}
 
-	// set功能
+	// set 功能检测
 	if cliSetDisplay {
-		// vcp 代码或者功能需要指定一个
-		if cliVCPCode == -1 && cliVCPFeature == "" {
-			log.Fatalln("no specify vcp code or vcp feature")
+		// vcp 代码需要指定
+		if cliVCPCode == -1 {
+			log.Fatalln("no specify vcp code")
 		}
 		// vcp 功能值需要指定
 		if cliVCPValue == -1 {
@@ -121,23 +123,20 @@ Example:
 func showChangelog() {
 	var versionInfo = `Changelog:
   1.00:
-    - First release`
+    - First release
+  1.0.1:
+    - Compatible to displayController v1.01`
 	fmt.Println(versionInfo)
 }
 
 func main() {
 	if cliShowDisplay {
-		if cliDisplayID != -1 {
-			err := showDisplayByID(cliDisplayID)
-			if err != nil {
-				log.Fatalln(err)
-			}
-		} else if cliDisplayHandle != -1 {
+		if cliUseHandle {
 			err := showDisplayByHandle(cliDisplayHandle)
 			if err != nil {
 				log.Fatalln(err)
 			}
-		} else {
+		} else if cliUseAll {
 			err := showAllDisplay()
 			if err != nil {
 				log.Fatalln(err)
@@ -146,81 +145,29 @@ func main() {
 	}
 
 	if cliGetDisplay {
-		if cliDisplayID != -1 {
-			if VCPFeatures[cliVCPFeature] != 0 {
-				err := getDisplayByID(cliDisplayID, VCPFeatures[cliVCPFeature])
-				if err != nil {
-					log.Fatalln(err)
-				}
-			} else if cliVCPCode != -1 {
-				err := getDisplayByID(cliDisplayID, byte(cliVCPCode))
-				if err != nil {
-					log.Fatalln(err)
-				}
+		if cliUseHandle {
+			err := getDisplayByHandle(cliDisplayHandle, byte(cliVCPCode))
+			if err != nil {
+				log.Fatalln(err)
 			}
-		} else if cliDisplayHandle != -1 {
-			if VCPFeatures[cliVCPFeature] != 0 {
-				err := getDisplayByHandle(cliDisplayHandle, VCPFeatures[cliVCPFeature])
-				if err != nil {
-					log.Fatalln(err)
-				}
-			} else if cliVCPCode != -1 {
-				err := getDisplayByHandle(cliDisplayHandle, byte(cliVCPCode))
-				if err != nil {
-					log.Fatalln(err)
-				}
-			}
-		} else {
-			if VCPFeatures[cliVCPFeature] != 0 {
-				err := getAllDisplay(VCPFeatures[cliVCPFeature])
-				if err != nil {
-					log.Fatalln(err)
-				}
-			} else if cliVCPCode != -1 {
-				err := getAllDisplay(byte(cliVCPCode))
-				if err != nil {
-					log.Fatalln(err)
-				}
+		} else if cliUseAll {
+			err := getAllDisplay(byte(cliVCPCode))
+			if err != nil {
+				log.Fatalln(err)
 			}
 		}
 	}
 
 	if cliSetDisplay {
-		if cliDisplayID != -1 {
-			if VCPFeatures[cliVCPFeature] != 0 {
-				err := setDisplayByID(cliDisplayID, VCPFeatures[cliVCPFeature], cliVCPValue)
-				if err != nil {
-					log.Fatalln(err)
-				}
-			} else if cliVCPCode != -1 {
-				err := setDisplayByID(cliDisplayID, byte(cliVCPCode), cliVCPValue)
-				if err != nil {
-					log.Fatalln(err)
-				}
+		if cliUseHandle {
+			err := setDisplayByHandle(cliDisplayHandle, byte(cliVCPCode), cliVCPValue)
+			if err != nil {
+				log.Fatalln(err)
 			}
-		} else if cliDisplayHandle != -1 {
-			if VCPFeatures[cliVCPFeature] != 0 {
-				err := setDisplayByHandle(cliDisplayHandle, VCPFeatures[cliVCPFeature], cliVCPValue)
-				if err != nil {
-					log.Fatalln(err)
-				}
-			} else if cliVCPCode != -1 {
-				err := setDisplayByHandle(cliDisplayHandle, byte(cliVCPCode), cliVCPValue)
-				if err != nil {
-					log.Fatalln(err)
-				}
-			}
-		} else {
-			if VCPFeatures[cliVCPFeature] != 0 {
-				err := setAllDisplay(VCPFeatures[cliVCPFeature], cliVCPValue)
-				if err != nil {
-					log.Fatalln(err)
-				}
-			} else if cliVCPCode != -1 {
-				err := setAllDisplay(byte(cliVCPCode), cliVCPValue)
-				if err != nil {
-					log.Fatalln(err)
-				}
+		} else if cliUseAll {
+			err := setAllDisplay(byte(cliVCPCode), cliVCPValue)
+			if err != nil {
+				log.Fatalln(err)
 			}
 		}
 	}
