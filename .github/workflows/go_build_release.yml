@@ -1,20 +1,6 @@
 name: Go Build and Release
 
 on:
-  push:
-    branches: [ main ]
-    paths-ignore:
-      - 'docs/**'
-      - '.github/**'
-      - '**.md'
-      - 'LICENSE'
-  pull_request:
-    branches: [ main ]
-    paths-ignore:
-      - 'docs/**'
-      - '.github/**'
-      - '**.md'
-      - 'LICENSE'
   workflow_dispatch:
     inputs:
       version:
