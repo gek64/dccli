@@ -10,29 +10,29 @@
 - 显示控制器命令行界面
 
 ## 使用说明
+- 不带参数直接运行，将启动demo控制亮度
 ```
-使用说明:                                                                 
-    dccli [指令] [参数]                                        
+使用说明:
+    dccli [指令] [参数]
                                                                        
-指令:                                                               
+指令:
     -show          : 显示显示器信息
     -get           : 为选中的显示器获取vcp功能对应的值
     -set           : 为选中的显示器设置vcp功能对应的值
-    -h             : 显示帮助                                      
-    -v             : 显示版本                                    
-                                                                       
-参数:                                                             
-    -id      <int_number>         : 通过id选择显示器
+    -demo          : simple demo to control brightness
+    -h             : 显示帮助
+    -v             : 显示版本
+
+参数:
     -handle  <int_number>         : 通过handle选择显示器
     -all                          : 选择全部显示器
     -vcp     <vcp_code>           : 指定vcp代码
-    -feature <vcp_feature>        : 指定vcp功能
     -value   <vcp_feature_value>  : 指定vcp功能的值
 
-Example:
-1) dccli -show
-2) dccli -show -all
-3) dccli -get -id 0 -feature Brightness
+例子:
+1) dccli -demo
+2) dccli -show
+3) dccli -get -handle 0 -vcp 0x10
 4) dccli -set -handle 0 -vcp 0x10 -value 50
 ```
 

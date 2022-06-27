@@ -11,29 +11,29 @@
 - Display controller command line interface
 
 ## Usage
+- Run directly without parameters, will start DEMO to control brightness
 ```
-Usage:                                                                 
-    dccli [Command] [Arguments]                                        
-                                                                       
-Command:                                                               
-    -show          : show display monitor info                         
+Usage:
+    dccli [Command] [Arguments]
+
+Command:
+    -show          : show display monitor info
     -get           : get vcp feature value from select display monitors
-    -set           : set vcp feature value for select display monitors 
-    -h             : show help                                         
-    -v             : show version                                      
-                                                                       
-Arguments:                                                             
-    -id      <int_number>         : select display monitor by id       
-    -handle  <int_number>         : select display monitor by handle   
-    -all                          : select all display monitor         
-    -vcp     <vcp_code>           : specify vcp code                   
-    -feature <vcp_feature>        : specify vcp feature                
+    -set           : set vcp feature value for select display monitors
+    -demo          : simple demo to control brightness
+    -h             : show help
+    -v             : show version
+
+Arguments:
+    -handle  <int_number>         : select display monitor by handle
+    -all                          : select all display monitor
+    -vcp     <vcp_code>           : specify vcp code
     -value   <vcp_feature_value>  : specify vcp feature value
 
 Example:
-1) dccli -show
-2) dccli -show -all
-3) dccli -get -id 0 -feature Brightness
+1) dccli -demo
+2) dccli -show
+3) dccli -get -handle 0 -vcp 0x10
 4) dccli -set -handle 0 -vcp 0x10 -value 50
 ```
 
