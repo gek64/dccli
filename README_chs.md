@@ -19,7 +19,7 @@
     -show          : 显示显示器信息
     -get           : 为选中的显示器获取vcp功能对应的值
     -set           : 为选中的显示器设置vcp功能对应的值
-    -demo          : simple demo to control brightness
+    -demo          : 简单控制亮度demo
     -h             : 显示帮助
     -v             : 显示版本
 
