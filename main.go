@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 )
 
 var (
@@ -76,8 +75,7 @@ Example:
 	if len(os.Args) == 1 || cliDemo {
 		err := runDemo()
 		if err != nil {
-			log.Println(err)
-			time.Sleep(3 * time.Second)
+			log.Fatalln(err)
 		}
 		os.Exit(0)
 	}
