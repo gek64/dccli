@@ -64,10 +64,11 @@ Arguments:
     -value   <vcp_feature_value>  : specify vcp feature value
 
 Example:
-1) dccli -demo
-2) dccli -show
-3) dccli -get -handle 0 -vcp 0x10
-4) dccli -set -handle 0 -vcp 0x10 -value 50`
+1) run brightness demo:                 dccli -demo
+2) show all display monitor info:       dccli -show
+3) get brightness from monitor 0:       dccli -get -handle 0 -vcp 0x10
+4) set monitor 0's brightness to 50% :  dccli -set -handle 0 -vcp 0x10 -value 50
+5) power off monitor 1:                 dccli -set -handle 1 -vcp 0xD6 -value 05`
 		fmt.Println(helpInfo)
 	}
 
