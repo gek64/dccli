@@ -1,7 +1,5 @@
 module dccli
 
-go 1.18
+go 1.19
 
-require github.com/gek64/displayController v1.0.1
-
-replace github.com/gek64/displayController => ../displayController
+require github.com/gek64/displayController v1.0.2
