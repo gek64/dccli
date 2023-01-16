@@ -57,6 +57,7 @@ go build -v -trimpath -ldflags "-s -w"
 - It only supports Windows now, and support systems such as macOS, Linux kernel system and freeBSD will be considered in the future.
 
 ### Get the display driver parameter normally, but the display monitor parameter cannot be obtained and controlled.
+- Converter adapters, such as hdmi to vga adapters will prevent the program from working
 - This program uses the `VESA` `DDC/CI` Display communication standard protocol which release in 1998 to exchange data with physical display monitors. Most of the modern display supports and enables this feature by default, If you encounter this problem, please confirm whether the `DDC/CI` function has been opened in OSD menu, or contact your display manufacturer to get more relevant information
 
 ### What other parameters can be customized?
