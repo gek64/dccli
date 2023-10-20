@@ -53,7 +53,10 @@ jobs:
 
           # 编译所有支持的架构/系统对
           go mod tidy
-          "${{ github.workspace }}/gobuilder_runner" -os windows
+          "${{ github.workspace }}/gobuilder_runner" -os windows -arch amd64
+          "${{ github.workspace }}/gobuilder_runner" -os windows -arch 386
+          "${{ github.workspace }}/gobuilder_runner" -os windows -arch arm
+          "${{ github.workspace }}/gobuilder_runner" -os windows -arch arm64
 
           # 显示文件路径(debug)
           # ls .. -R -las
@@ -62,7 +65,6 @@ jobs:
           sha256sum bin/* > bin/SHA256SUMS.txt
 
           # 获取版本信息
-          echo $(go run . -v)
           echo $(go run . -v) > bin/version.txt
 
       - name: Remove old Releases
