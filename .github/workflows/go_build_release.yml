@@ -54,20 +54,15 @@ jobs:
           # 编译所有支持的架构/系统对
           go mod tidy
           "${{ github.workspace }}/gobuilder_runner" -os windows -arch amd64
-          echo "okok1"
           "${{ github.workspace }}/gobuilder_runner" -os windows -arch 386
-          echo "okok2"
           "${{ github.workspace }}/gobuilder_runner" -os windows -arch arm
-          echo "okok3"
           "${{ github.workspace }}/gobuilder_runner" -os windows -arch arm64
-          
-          echo "okok4"
 
           # 获取sha256 checksum
           sha256sum bin/* > bin/SHA256SUMS.txt
 
           # 获取版本信息
-          echo $(go run . -v) > bin/version.txt
+          echo latest > bin/version.txt
 
       - name: Remove old Releases
         uses: dev-drprasad/delete-older-releases@v0.3.2
