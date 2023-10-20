@@ -1,6 +1,20 @@
 name: Go Build and Release
 
 on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - '.github/**'
+      - '**.md'
+      - 'LICENSE'
+  pull_request:
+    branches: [ main ]
+    paths-ignore:
+      - 'docs/**'
+      - '.github/**'
+      - '**.md'
+      - 'LICENSE'
   workflow_dispatch:
     inputs:
       version:
@@ -14,18 +28,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup golang
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
         with:
-          go-version: '^1.17'
+          go-version: '^1.20'
 
       - name: Build
         run: |
           # 下载依赖
-          git clone https://github.com/gek64/displayController.git
-          ln -s ${{ github.workspace }}/displayController ../displayController
+          git clone https://github.com/gek64/gek.git
+          ln -s ${{ github.workspace }}/gek ../gek
 
           mkdir -p bin
 
@@ -48,10 +62,10 @@ jobs:
           sha256sum bin/* > bin/SHA256SUMS.txt
 
           # 获取版本信息
-          echo "${{ github.event.inputs.version }}" > bin/version.txt
+          echo "$(go run . -v)" > bin/version.txt
 
       - name: Remove old Releases
-        uses: dev-drprasad/delete-older-releases@v0.2.0
+        uses: dev-drprasad/delete-older-releases@v0.3.2
         with:
           keep_latest: 0
           delete_tags: true
@@ -59,7 +73,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build_files
           path: bin/*
@@ -69,10 +83,10 @@ jobs:
     needs: build
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: build_files
           path: bin
@@ -89,3 +103,12 @@ jobs:
           artifacts: "bin/*"
           tag: ${{ env.VERSION }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  delete-artifacts:
+    runs-on: ubuntu-latest
+    needs: release
+    steps:
+      - name: Remove old artifacts
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: "0s"
