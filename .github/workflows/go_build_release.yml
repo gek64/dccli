@@ -58,9 +58,6 @@ jobs:
           "${{ github.workspace }}/gobuilder_runner" -os windows -arch arm
           "${{ github.workspace }}/gobuilder_runner" -os windows -arch arm64
 
-          # 显示文件路径(debug)
-          # ls .. -R -las
-
           # 获取sha256 checksum
           sha256sum bin/* > bin/SHA256SUMS.txt
 
