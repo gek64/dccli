@@ -42,9 +42,6 @@ jobs:
           ln -s ${{ github.workspace }}/gek ../gek
 
           mkdir -p bin
-          
-          # 获取版本信息
-          echo "$(go run . -v)" > bin/version.txt
 
           # 编译批量编译程序
           git clone https://github.com/gek64/gobuilder.git
@@ -63,6 +60,10 @@ jobs:
 
           # 获取sha256 checksum
           sha256sum bin/* > bin/SHA256SUMS.txt
+
+          # 获取版本信息
+          echo $(go run . -v)
+          echo $(go run . -v) > bin/version.txt
 
       - name: Remove old Releases
         uses: dev-drprasad/delete-older-releases@v0.3.2
