@@ -63,7 +63,7 @@ jobs:
           
           # 批量编译
           go mod tidy
-          powershell -Command "${{ github.workspace }}/gobd_runner -os windows -d bin -no_debug -no_cgo"
+          powershell -Command ".\gobd_runner -os windows -d bin -no_debug -no_cgo"
           
           # 获取sha256 checksum
           powershell -Command "Get-ChildItem -Recurse bin/* | Get-FileHash" SHA256SUMS.txt
