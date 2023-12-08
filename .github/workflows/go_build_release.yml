@@ -54,9 +54,6 @@ jobs:
           go build -o "${{ github.workspace }}/gobd_runner.exe"
           
           cd ${{ github.workspace }}
-          
-          powershell -Command echo "VERSION=$(go run . -v)" >> $GITHUB_ENV
-          
           go mod tidy
           ${{ github.workspace }}/gobd_runner.exe -os windows -d bin -no_debug -no_cgo
 
@@ -67,7 +64,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: "bin/*"
-          tag: ${{ env.VERSION }}
+          tag: 'latest'
           token: ${{ secrets.GITHUB_TOKEN }}
           generateReleaseNotes: true
           removeArtifacts: true
