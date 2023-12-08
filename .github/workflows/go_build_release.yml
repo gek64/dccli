@@ -65,7 +65,9 @@ jobs:
 
           ./gobd_runner -h
 
-          .\gobd_runner -h
+          D:\a\dccli\dccli\gobd_runner -h
+
+          D:\a\dccli\dccli\gobd_runner -os windows -d bin -no_debug -no_cgo
           
           # 批量编译
           go mod tidy
