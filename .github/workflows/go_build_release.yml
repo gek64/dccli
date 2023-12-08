@@ -68,7 +68,7 @@ jobs:
           dir
           
           # 获取sha256 checksum
-          powershell -Command "Get-ChildItem -Recurse bin/* | Get-FileHash"
+          # powershell -Command "Get-ChildItem -Recurse bin/* | Get-FileHash"
 
       - name: Release
         uses: ncipollo/release-action@v1
