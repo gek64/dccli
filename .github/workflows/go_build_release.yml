@@ -51,27 +51,17 @@ jobs:
         run: |
           # 编译gobd
           git clone https://github.com/gek64/gobd.git
-          cd gobd
-          go build -o "${{ github.workspace }}/gobd_runner"
-          chmod +x "${{ github.workspace }}/gobd_runner"
           
           # 编译程序
           cd ${{ github.workspace }}
           
           # 获取版本信息
           echo "VERSION=$(go run . -v)" >> $GITHUB_ENV
-
-          dir
-
-          ./gobd_runner -h
-
-          D:\a\dccli\dccli\gobd_runner -h
-
-          D:\a\dccli\dccli\gobd_runner -os windows -d bin -no_debug -no_cgo
           
           # 批量编译
           go mod tidy
-          ${{ github.workspace }}/gobd_runner -os windows -d bin -no_debug -no_cgo
+          go run ${{ github.workspace }}/gobd/. -os windows -d bin -no_debug -no_cgo
+          # ${{ github.workspace }}/gobd_runner -os windows -d bin -no_debug -no_cgo
 
           dir
           
