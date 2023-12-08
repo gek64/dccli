@@ -66,7 +66,7 @@ jobs:
           ${{ github.workspace }}/gobd_runner.exe -os windows -d bin -no_debug -no_cgo"
           
           # 获取sha256 checksum
-          powershell -Command "Get-ChildItem -Recurse bin/* | Get-FileHash" SHA256SUMS.txt
+          powershell -Command "Get-ChildItem -Recurse bin/* | Get-FileHash" > SHA256SUMS.txt
           mv SHA256SUMS.txt bin
 
       - name: Release
