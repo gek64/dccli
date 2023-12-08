@@ -29,7 +29,7 @@ on:
 
 jobs:
   job1:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -63,7 +63,6 @@ jobs:
           
           # 批量编译
           go mod tidy
-          export GOOS=windows
           "${{ github.workspace }}/gobd_runner" -os windows -d bin -no_debug -no_cgo
           
           # 获取sha256 checksum
