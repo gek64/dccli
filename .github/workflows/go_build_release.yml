@@ -55,14 +55,13 @@ jobs:
           
           cd ${{ github.workspace }}
           
-          echo "VERSION=$(go run . -v)" >> $GITHUB_ENV
+          powershell -Command echo "VERSION=$(go run . -v)" >> $GITHUB_ENV
           
           go mod tidy
           ${{ github.workspace }}/gobd_runner.exe -os windows -d bin -no_debug -no_cgo
 
-          dir
-          
-          
+          powershell -Command "Get-ChildItem -Recurse ./bin/* | Get-FileHash" > ./SHA256SUMS.txt
+          move ./SHA256SUMS.txt ./bin/SHA256SUMS.txt
 
       - name: Release
         uses: ncipollo/release-action@v1
