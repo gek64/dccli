@@ -60,10 +60,14 @@ jobs:
           
           # 获取版本信息
           echo "VERSION=$(go run . -v)" >> $GITHUB_ENV
+
+          dir
           
           # 批量编译
           go mod tidy
           ${{ github.workspace }}/gobd_runner -os windows -d bin -no_debug -no_cgo
+
+          dir
           
           # 获取sha256 checksum
           powershell -Command "Get-ChildItem -Recurse bin/* | Get-FileHash" SHA256SUMS.txt
