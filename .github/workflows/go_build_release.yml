@@ -62,6 +62,10 @@ jobs:
           echo "VERSION=$(go run . -v)" >> $GITHUB_ENV
 
           dir
+
+          ./gobd_runner -h
+
+          .\gobd_runner -h
           
           # 批量编译
           go mod tidy
