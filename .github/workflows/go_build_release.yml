@@ -63,6 +63,7 @@ jobs:
           
           # 批量编译
           go mod tidy
+          export GOOS=windows
           "${{ github.workspace }}/gobd_runner" -os windows -d bin -no_debug -no_cgo
           
           # 获取sha256 checksum
