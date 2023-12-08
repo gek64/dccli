@@ -63,7 +63,10 @@ jobs:
           
           # 批量编译
           go mod tidy
-          "${{ github.workspace }}/gobd_runner" -os windows -d bin -no_debug -no_cgo
+
+          ${{ github.workspace }}/gobd_runner -h
+          
+          ${{ github.workspace }}/gobd_runner -os windows -d bin -no_debug -no_cgo
           
           # 获取sha256 checksum
           sha256sum bin/* > bin/SHA256SUMS.txt
