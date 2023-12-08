@@ -1,15 +1,19 @@
-name: Go Build and Release
+name: Go Build and Release and Clean
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - master
     paths-ignore:
       - 'docs/**'
       - '.github/**'
       - '**.md'
       - 'LICENSE'
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+      - master
     paths-ignore:
       - 'docs/**'
       - '.github/**'
@@ -17,14 +21,14 @@ on:
       - 'LICENSE'
   workflow_dispatch:
     inputs:
-      version:
-        description: 'version'
+      tag:
+        description: 'tag'
         required: false
         default: 'latest'
-        # use ${{ github.event.inputs.version }}
+        # use ${{ github.event.inputs.tag }}
 
 jobs:
-  build:
+  job1:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,36 +37,7 @@ jobs:
       - name: Setup golang
         uses: actions/setup-go@v4
         with:
-          go-version: '^1.20'
-
-      - name: Build
-        run: |
-          # 下载依赖
-          git clone https://github.com/gek64/gek.git
-          ln -s ${{ github.workspace }}/gek ../gek
-
-          mkdir -p bin
-
-          # 编译批量编译程序
-          git clone https://github.com/gek64/gobuilder.git
-          cd gobuilder
-          go mod tidy
-          go build -v -trimpath -ldflags "-s -w" -o "${{ github.workspace }}/gobuilder_runner"
-          chmod +x "${{ github.workspace }}/gobuilder_runner"
-          cd ${{ github.workspace }}
-
-          # 编译所有支持的架构/系统对
-          go mod tidy
-          "${{ github.workspace }}/gobuilder_runner" -os windows -arch amd64
-          "${{ github.workspace }}/gobuilder_runner" -os windows -arch 386
-          "${{ github.workspace }}/gobuilder_runner" -os windows -arch arm
-          "${{ github.workspace }}/gobuilder_runner" -os windows -arch arm64
-
-          # 获取sha256 checksum
-          sha256sum bin/* > bin/SHA256SUMS.txt
-
-          # 获取版本信息
-          echo latest > bin/version.txt
+          go-version: 'stable'
 
       - name: Remove old Releases
         uses: dev-drprasad/delete-older-releases@v0.3.2
@@ -72,30 +47,26 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: build_files
-          path: bin/*
-
-  release:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Download all artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: build_files
-          path: bin
-
-      - name: Read version
+      - name: Build
         run: |
+          # 编译gobd
+          git clone https://github.com/gek64/gobd.git
+          cd gobd
+          go build -o "${{ github.workspace }}/gobd_runner"
+          chmod +x "${{ github.workspace }}/gobd_runner"
+          
+          # 编译程序
+          cd ${{ github.workspace }}
+          
           # 获取版本信息
-          echo "VERSION=$(cat bin/version.txt)" >> $GITHUB_ENV
-          rm -rf bin/version.txt
+          echo "VERSION=$(go run . -v)" >> $GITHUB_ENV
+          
+          # 批量编译
+          go mod tidy
+          "${{ github.workspace }}/gobd_runner" -os windows -d bin -no_debug -no_cgo
+          
+          # 获取sha256 checksum
+          sha256sum bin/* > bin/SHA256SUMS.txt
 
       - name: Release
         uses: ncipollo/release-action@v1
@@ -103,11 +74,10 @@ jobs:
           artifacts: "bin/*"
           tag: ${{ env.VERSION }}
           token: ${{ secrets.GITHUB_TOKEN }}
+          generateReleaseNotes: true
+          removeArtifacts: true
+          replacesArtifacts: true
 
-  delete-artifacts:
-    runs-on: ubuntu-latest
-    needs: release
-    steps:
       - name: Remove old artifacts
         uses: c-hive/gha-remove-artifacts@v1
         with:
