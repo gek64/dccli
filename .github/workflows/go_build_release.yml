@@ -52,14 +52,13 @@ jobs:
           git clone https://github.com/gek64/gobd.git
           cd gobd
           go build -o "${{ github.workspace }}/gobd_runner.exe"
-          chmod +x "${{ github.workspace }}/gobd_runner.exe"
           
           cd ${{ github.workspace }}
           
           echo "VERSION=$(go run . -v)" >> $GITHUB_ENV
           
           go mod tidy
-          ${{ github.workspace }}/gobd_runner.exe -os windows -d bin -no_debug -no_cgo"
+          ${{ github.workspace }}/gobd_runner.exe -os windows -d bin -no_debug -no_cgo
 
           dir
           
