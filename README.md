@@ -43,8 +43,6 @@ Example:
 
 ## Compile
 ```sh
-# Download the source code of dependent packages
-git clone https://github.com/gek64/displayController.git
 # Download application source code
 git clone https://github.com/gek64/dccli.git
 # Compile the source code
